@@ -1,0 +1,19 @@
+# ninja log v5
+0	34143	1727234180425798186	/home/wanghao/Models/PMP-Net-main/pointnet2_ops_lib/build/temp.linux-x86_64-cpython-37/pointnet2_ops/_ext-src/src/ball_query.o	258f100bfc7b390b
+1	34236	1727234180517798464	/home/wanghao/Models/PMP-Net-main/pointnet2_ops_lib/build/temp.linux-x86_64-cpython-37/pointnet2_ops/_ext-src/src/bindings.o	c89ab2816c3e914c
+2	34499	1727234180765799214	/home/wanghao/Models/PMP-Net-main/pointnet2_ops_lib/build/temp.linux-x86_64-cpython-37/pointnet2_ops/_ext-src/src/interpolate.o	dd2ade1db9658ba2
+3	34636	1727234180913799662	/home/wanghao/Models/PMP-Net-main/pointnet2_ops_lib/build/temp.linux-x86_64-cpython-37/pointnet2_ops/_ext-src/src/sampling.o	76d71b83d69366ea
+1	34799	1727234181077800157	/home/wanghao/Models/PMP-Net-main/pointnet2_ops_lib/build/temp.linux-x86_64-cpython-37/pointnet2_ops/_ext-src/src/group_points.o	62455b57194935c4
+3	84886	1727234231165945719	/home/wanghao/Models/PMP-Net-main/pointnet2_ops_lib/build/temp.linux-x86_64-cpython-37/pointnet2_ops/_ext-src/src/interpolate_gpu.o	74b5a72beebc8f35
+0	85300	1727234231565946836	/home/wanghao/Models/PMP-Net-main/pointnet2_ops_lib/build/temp.linux-x86_64-cpython-37/pointnet2_ops/_ext-src/src/ball_query_gpu.o	beae86d4f337486a
+2	85632	1727234231913947809	/home/wanghao/Models/PMP-Net-main/pointnet2_ops_lib/build/temp.linux-x86_64-cpython-37/pointnet2_ops/_ext-src/src/group_points_gpu.o	f28431c4dd5740a5
+3	89577	1727234235841958738	/home/wanghao/Models/PMP-Net-main/pointnet2_ops_lib/build/temp.linux-x86_64-cpython-37/pointnet2_ops/_ext-src/src/sampling_gpu.o	8c163a913fca6127
+0	57910	1728463955414594243	/home/wanghao/Projects/PMP-Net-main-JRS/pointnet2_ops_lib/build/temp.linux-x86_64-cpython-37/pointnet2_ops/_ext-src/src/ball_query.o	804c3030613f7cd1
+8	58358	1728463955846591236	/home/wanghao/Projects/PMP-Net-main-JRS/pointnet2_ops_lib/build/temp.linux-x86_64-cpython-37/pointnet2_ops/_ext-src/src/group_points.o	8d0f8559e57ed482
+11	58665	1728463956166589009	/home/wanghao/Projects/PMP-Net-main-JRS/pointnet2_ops_lib/build/temp.linux-x86_64-cpython-37/pointnet2_ops/_ext-src/src/interpolate.o	e15d77e001faa389
+19	59370	1728463956878584054	/home/wanghao/Projects/PMP-Net-main-JRS/pointnet2_ops_lib/build/temp.linux-x86_64-cpython-37/pointnet2_ops/_ext-src/src/sampling.o	eecc51dc693045ca
+7	60354	1728463957854577267	/home/wanghao/Projects/PMP-Net-main-JRS/pointnet2_ops_lib/build/temp.linux-x86_64-cpython-37/pointnet2_ops/_ext-src/src/bindings.o	130e9bb34177a56c
+8	121514	1728464019022158739	/home/wanghao/Projects/PMP-Net-main-JRS/pointnet2_ops_lib/build/temp.linux-x86_64-cpython-37/pointnet2_ops/_ext-src/src/group_points_gpu.o	653e03865d905be5
+2	121707	1728464019206157500	/home/wanghao/Projects/PMP-Net-main-JRS/pointnet2_ops_lib/build/temp.linux-x86_64-cpython-37/pointnet2_ops/_ext-src/src/ball_query_gpu.o	4b813a9042db6b28
+17	122041	1728464019522155372	/home/wanghao/Projects/PMP-Net-main-JRS/pointnet2_ops_lib/build/temp.linux-x86_64-cpython-37/pointnet2_ops/_ext-src/src/interpolate_gpu.o	8fcbf8f93be42506
+21	126496	1728464023994125287	/home/wanghao/Projects/PMP-Net-main-JRS/pointnet2_ops_lib/build/temp.linux-x86_64-cpython-37/pointnet2_ops/_ext-src/src/sampling_gpu.o	be7d367c5e5e3666
