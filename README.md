@@ -2,54 +2,9 @@
 
 [<img src="pics/network.png" width="100%" alt="Intro pic" />](pics/network.png)
 
-## [NEWS]
+## [JRS PJ]
 
-- **2022-03 [NEW:tada:]** The [Jittor](https://cg.cs.tsinghua.edu.cn/jittor/) implementations of both PMP-Net and PMP-Net++ are released in the [PMPPlus-Jittor](https://github.com/diviswen/PMP-Net/tree/main/PMPPlus-Jittor) folder.
-- **2022-02 [NEW:tada:]** [PMP-Net++](https://arxiv.org/abs/2012.03408), the journal extension of PMP-Net is accepted to [TPAMI](https://ieeexplore.ieee.org/document/9735342). This repository now contains the code of both PMP-Net and PMP-Net++!
-- **2021** [PMP-Net](https://arxiv.org/abs/2012.03408) is published at [CVPR 2021](https://openaccess.thecvf.com/content/CVPR2021/html/Wen_PMP-Net_Point_Cloud_Completion_by_Learning_Multi-Step_Point_Moving_Paths_CVPR_2021_paper.html), and the code is released!
-
-## [PMP-Net++]
-This repository contains the PyTorch implementation and Jittor implementation of the papers:
-
-**1. PMP-Net++: Point Cloud Completion by Transformer-Enhanced Multi-step Point Moving Paths, TPAMI 2023**
-
-**2. PMP-Net: Point Cloud Completion by Learning Multi-step Point Moving Paths, CVPR 2021**
-
-[ [PMP-Net](https://arxiv.org/abs/2012.03408) | [PMP-Net++](https://arxiv.org/abs/2012.03408) | [IEEE Xplore](https://ieeexplore.ieee.org/document/9735342) | [Webpage]() | [Jittor](https://cg.cs.tsinghua.edu.cn/jittor/) ] 
-
-> Point cloud completion concerns to predict missing part for incomplete 3D shapes. A common strategy is to generate
-complete shape according to incomplete input. However, unordered nature of point clouds will degrade generation of high-quality 3D
-shapes, as detailed topology and structure of unordered points are hard to be captured during the generative process using an
-extracted latent code. We address this problem by formulating completion as point cloud deformation process. Specifically, we design a
-novel neural network, named PMP-Net++, to mimic behavior of an earth mover. It moves each point of incomplete input to obtain a
-complete point cloud, where total distance of point moving paths (PMPs) should be the shortest. Therefore, PMP-Net++ predicts
-unique PMP for each point according to constraint of point moving distances. The network learns a strict and unique correspondence
-on point-level, and thus improves quality of predicted complete shape. Moreover, since moving points heavily relies on per-point
-features learned by network, we further introduce a transformer-enhanced representation learning network, which significantly
-improves completion performance of PMP-Net++. We conduct comprehensive experiments in shape completion, and further explore
-application on point cloud up-sampling, which demonstrate non-trivial improvement of PMP-Net++ over state-of-the-art point cloud
-completion/up-sampling methods
-
-## [Cite this work]
-
-```
-@ARTICLE{pmpnet++,
-  author={Wen, Xin and Xiang, Peng and Han, Zhizhong and Cao, Yan-Pei and Wan, Pengfei and Zheng, Wen and Liu, Yu-Shen},
-  journal={IEEE Transactions on Pattern Analysis and Machine Intelligence}, 
-  title={PMP-Net++: Point Cloud Completion by Transformer-Enhanced Multi-Step Point Moving Paths}, 
-  year={2023},
-  volume={45},
-  number={1},
-  pages={852-867},
-  doi={10.1109/TPAMI.2022.3159003}}
-
-@inproceedings{wen2021pmp,
-    title={PMP-Net: Point cloud completion by learning multi-step point moving paths},
-    author={Wen, Xin and Xiang, Peng and Han, Zhizhong and Cao, Yan-Pei and Wan, Pengfei and Zheng, Wen and Liu, Yu-Shen},
-    booktitle={Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR)},
-    year={2021}
-}
-```
+- 针对金线补全的项目
 
 ## [Getting Started]
 #### Datasets and Pretrained Models
