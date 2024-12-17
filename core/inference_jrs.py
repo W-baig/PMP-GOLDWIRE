@@ -61,8 +61,8 @@ def inference_net(cfg):
     partial_set = []
     pcd3_set = []
 
-    for model_idx, (taxonomy_id, model_id, data, centroid, furthest_distance) in enumerate(t_obj):
-        taxonomy_id = taxonomy_id[0] if isinstance(taxonomy_id[0], str) else taxonomy_id[0].item()
+    for model_idx, (pth_id, model_id, data, centroid, furthest_distance) in enumerate(t_obj):
+        pth_id = pth_id[0] if isinstance(pth_id[0], str) else pth_id[0].item()
         model_id = model_id[0]
 
         with torch.no_grad():
@@ -96,7 +96,7 @@ def inference_net(cfg):
             #     pcd3_flipped = gather_operation(pcd3_flipped, furthest_point_sample(pcd3, 10240)) # (B, 3, NPOINTS)
             #     pcd3 = pcd3_flipped.permute(0, 2, 1).contiguous() # (B, NPOINTS, 3)
 
-            output_folder = os.path.join(cfg.DIR.OUT_PATH, 'benchmark', taxonomy_id)
+            output_folder = os.path.join(cfg.DIR.OUT_PATH, 'benchmark', pth_id)
             if not os.path.exists(output_folder):
                 os.makedirs(output_folder)
             # output_folder_pcd1 = os.path.join(output_folder, 'pcd1')
@@ -145,10 +145,10 @@ def inference_net(cfg):
             np.savetxt(output_file_path, filted_pts)
 
 
-            t_obj.set_description('Test[%d/%d] Taxonomy = %s Sample = %s File = %s' %
-                         (model_idx + 1, n_samples, taxonomy_id, model_id, output_file_path))
+            t_obj.set_description('Test[%d/%d] pth = %s Sample = %s' %
+                         (model_idx + 1, n_samples, pth_id, model_id))
     
-    output_folder = os.path.join(cfg.DIR.OUT_PATH, 'benchmark', taxonomy_id)
+    output_folder = os.path.join(cfg.DIR.OUT_PATH, 'benchmark', pth_id)
 
     output_folder_pcd3 = os.path.join(output_folder, 'pcd3.xyz')
     np.savetxt(output_folder_pcd3, pcd3_set)

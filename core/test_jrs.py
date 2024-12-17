@@ -64,8 +64,8 @@ def test_net(cfg, epoch_idx=-1, test_data_loader=None, test_writer=None, model=N
     # Testing loop
     with tqdm(test_data_loader) as t:
         # print('repeating')
-        for model_idx, (taxonomy_id, model_id, data, centroid, furthest_distance) in enumerate(t):
-            taxonomy_id = taxonomy_id[0] if isinstance(taxonomy_id[0], str) else taxonomy_id[0].item()
+        for model_idx, (pth_id, model_id, data, centroid, furthest_distance) in enumerate(t):
+            pth_id = pth_id[0] if isinstance(pth_id[0], str) else pth_id[0].item()
             model_id = model_id[0]
 
             with torch.no_grad():
@@ -101,26 +101,26 @@ def test_net(cfg, epoch_idx=-1, test_data_loader=None, test_writer=None, model=N
                 test_losses.update([cd1, cd2, cd3, pmd_item])
 
                 test_metrics.update(_metrics)
-                if taxonomy_id not in category_metrics:
-                    category_metrics[taxonomy_id] = AverageMeter(Metrics.names())
-                category_metrics[taxonomy_id].update(_metrics)
+                if pth_id not in category_metrics:
+                    category_metrics[pth_id] = AverageMeter(Metrics.names())
+                category_metrics[pth_id].update(_metrics)
 
-                t.set_description('Test[%d/%d] Taxonomy = %s Sample = %s Losses = %s Metrics = %s' %
-                             (model_idx + 1, n_samples, taxonomy_id, model_id, ['%.4f' % l for l in test_losses.val()
+                t.set_description('Test[%d/%d] pth = %s Sample = %s Losses = %s Metrics = %s' %
+                             (model_idx + 1, n_samples, pth_id, model_id, ['%.4f' % l for l in test_losses.val()
                                                                                 ], ['%.4f' % m for m in _metrics]))
 
     # Print testing results
     print('============================ TEST RESULTS ============================')
-    print('Taxonomy', end='\t')
+    print('Pth', end='\t')
     print('#Sample', end='\t')
     for metric in test_metrics.items:
         print(metric, end='\t')
     print()
 
-    for taxonomy_id in category_metrics:
-        print(taxonomy_id, end='\t\t')
-        print(category_metrics[taxonomy_id].count(0), end='\t')
-        for value in category_metrics[taxonomy_id].avg():
+    for pth_id in category_metrics:
+        print(pth_id, end='\t\t')
+        print(category_metrics[pth_id].count(0), end='\t')
+        for value in category_metrics[pth_id].avg():
             print('%.4f' % value, end='\t')
         print()
 

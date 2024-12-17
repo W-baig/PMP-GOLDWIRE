@@ -115,7 +115,7 @@ def train_net(cfg):
         batch_end_time = time()
         n_batches = len(train_data_loader)
         with tqdm(train_data_loader) as t:
-            for batch_idx, (taxonomy_ids, model_ids, data, centroid, furthest_distance) in enumerate(t):
+            for batch_idx, (pth_id, model_ids, data, centroid, furthest_distance) in enumerate(t):
                 data_time.update(time() - batch_end_time)
                 for k, v in data.items():
                     data[k] = utils.helpers.var_or_cuda(v)

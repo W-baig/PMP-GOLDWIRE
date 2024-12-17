@@ -39,14 +39,14 @@ class DatasetSubset(Enum):
 
 
 def collate_fn(batch):
-    taxonomy_ids = []
+    pth_id = []
     model_ids = []
     data = {}
     centroid = []
     furthest_distance = []
 
     for sample in batch:
-        taxonomy_ids.append(sample[0])
+        pth_id.append(sample[0])
         model_ids.append(sample[1])
         centroid.append(sample[3])
         furthest_distance.append(sample[4])
@@ -59,7 +59,7 @@ def collate_fn(batch):
     for k, v in data.items():
         data[k] = torch.stack(v, 0)  #
 
-    return taxonomy_ids, model_ids, data, centroid, furthest_distance
+    return pth_id, model_ids, data, centroid, furthest_distance
 
 
 
@@ -102,65 +102,10 @@ class UpSamplePoints(object):
         return ptcloud
 
 
-class MyShapeNetDataSet(torch.utils.data.dataset.Dataset):
-    def __init__(self, root='/data1/xp/PCN', phase='train', categories=None):
-        assert phase in {'train', 'val', 'test'}
-        self.phase = phase
-        base_dir = os.path.join(root, phase)
-        if categories is None:
-            self.taxomony_ids = list(code_mapping.values())
-        else:
-            taxomony_ids = []
-            for c in categories:
-                taxomony_ids.append(code_mapping[c])
-            self.taxomony_ids = taxomony_ids
-
-        all_taxomony_ids = []
-        all_model_ids = []
-        all_pcds_partial = []
-        all_pcds_gt = []
-
-        for t_id in self.taxomony_ids:
-            gt_dir = os.path.join(base_dir, 'complete', t_id)
-            partial_dir = os.path.join(base_dir, 'partial', t_id)
-            model_ids = os.listdir(partial_dir)
-            all_taxomony_ids.extend([t_id for i in range(len(model_ids))])
-            all_model_ids.extend(model_ids)
-            all_pcds_gt.extend([os.path.join(gt_dir, f) for f in sorted(os.listdir(gt_dir))])
-            all_pcds_partial.extend([os.path.join(partial_dir, f) for f in sorted(os.listdir(partial_dir))])
-
-        self.taxomony_ids = all_taxomony_ids
-        self.model_ids = all_model_ids
-        self.path_partial = all_pcds_partial
-        self.path_gt = all_pcds_gt
-        self.LEN = len(self.model_ids)
-        self.transform = UpSamplePoints({'n_points': 2048})
-
-    def __len__(self):
-        return len(self.model_ids)
-
-    def __getitem__(self, index):
-        if self.phase == 'test':
-            partial = read_ply(self.path_partial[index]).astype(np.float32)
-        else:
-            idx_partial = random.randint(0, 7)
-            partial = read_ply(os.path.join(self.path_partial[index], '0{}.pcd'.format(idx_partial))).astype(np.float32)
-        partial = self.transform(partial)
-        gt = read_ply(self.path_gt[index]).astype(np.float32)
-        idx_random_complete = random.randint(0, self.LEN - 1)
-        random_complete = read_ply(self.path_gt[idx_random_complete]).astype(np.float32)
-        data = {
-            'X': torch.from_numpy(partial).float(),
-            'Y': torch.from_numpy(random_complete).float(),
-            'X_GT': torch.from_numpy(gt).float()
-        }
-        return self.taxomony_ids[index], self.model_ids[index], data
-
-
 class Dataset(torch.utils.data.dataset.Dataset):
-    def __init__(self, options, taxonomy_ids, data_path, file_list, transforms=None):
+    def __init__(self, options, pth_id, data_path, file_list, transforms=None):
         self.options = options
-        self.taxonomy_ids = taxonomy_ids
+        self.pth_id = pth_id
         self.data_path = data_path
         self.file_list = file_list
         self.transforms = transforms
@@ -201,206 +146,10 @@ class Dataset(torch.utils.data.dataset.Dataset):
         if self.transforms is not None:
             data, centroid, furthest_distance = self.transforms(data)
 
-        taxonomy_ids = self.taxonomy_ids
+        pth_id = self.pth_id
 
-        return taxonomy_ids, file_name, data, centroid, furthest_distance
+        return pth_id, file_name, data, centroid, furthest_distance
 
-
-class ShapeNetDataLoader(object):
-    def __init__(self, cfg):
-        self.cfg = cfg
-
-        # Load the dataset indexing file
-        self.dataset_categories = []
-        with open(cfg.DATASETS.SHAPENET.CATEGORY_FILE_PATH) as f:
-            self.dataset_categories = json.loads(f.read())
-
-    def get_dataset(self, subset):
-        n_renderings = self.cfg.DATASETS.SHAPENET.N_RENDERINGS if subset == DatasetSubset.TRAIN else 1
-        file_list = self._get_file_list(self.cfg, self._get_subset(subset), n_renderings)
-        transforms = self._get_transforms(self.cfg, subset)
-        return Dataset({
-            'n_renderings': n_renderings,
-            'required_items': ['partial_cloud', 'gtcloud'],
-            'shuffle': subset == DatasetSubset.TRAIN
-        }, file_list, transforms)
-
-    def _get_transforms(self, cfg, subset):
-        if subset == DatasetSubset.TRAIN:
-            return utils.data_transforms.Compose([{
-                'callback': 'UpSamplePoints',
-                'parameters': {
-                    'n_points': cfg.DATASETS.SHAPENET.N_POINTS
-                },
-                'objects': ['partial_cloud']
-            }, {
-                'callback': 'RandomMirrorPoints',
-                'objects': ['partial_cloud', 'gtcloud']
-            }, {
-                'callback': 'ToTensor',
-                'objects': ['partial_cloud', 'gtcloud']
-            }])
-        else:
-            return utils.data_transforms.Compose([{
-                'callback': 'UpSamplePoints',
-                'parameters': {
-                    'n_points': cfg.DATASETS.SHAPENET.N_POINTS
-                },
-                'objects': ['partial_cloud']
-            }, {
-                'callback': 'ToTensor',
-                'objects': ['partial_cloud', 'gtcloud']
-            }])
-
-    def _get_subset(self, subset):
-        if subset == DatasetSubset.TRAIN:
-            return 'train'
-        elif subset == DatasetSubset.VAL:
-            return 'val'
-        else:
-            return 'test'
-
-    def _get_file_list(self, cfg, subset, n_renderings=1):
-        """Prepare file list for the dataset"""
-        file_list = []
-
-        for dc in self.dataset_categories:
-            logging.info('Collecting files of Taxonomy [ID=%s, Name=%s]' % (dc['taxonomy_id'], dc['taxonomy_name']))
-            samples = dc[subset]
-
-            for s in tqdm(samples, leave=False):
-
-                if subset == 'test':
-
-                    gt_path = cfg.DATASETS.SHAPENET.COMPLETE_POINTS_PATH % (subset, dc['taxonomy_id'], s)
-                    file_list.append({'taxonomy_id': dc['taxonomy_id'],
-                    'model_id': s,
-                    'partial_cloud_path': gt_path.replace('complete', 'partial'),
-                    'gtcloud_path': gt_path})
-                else:
-                    file_list.append({
-                        'taxonomy_id':
-                            dc['taxonomy_id'],
-                        'model_id':
-                            s,
-                        'partial_cloud_path': [
-                            cfg.DATASETS.SHAPENET.PARTIAL_POINTS_PATH % (subset, dc['taxonomy_id'], s, i)
-                            for i in range(n_renderings)
-                        ],
-                        'gtcloud_path':
-                            cfg.DATASETS.SHAPENET.COMPLETE_POINTS_PATH % (subset, dc['taxonomy_id'], s),
-                    })
-
-                    '''
-                    gt_path = cfg.DATASETS.SHAPENET.COMPLETE_POINTS_PATH % (subset, dc['taxonomy_id'], s)
-                    file_list.extend([{
-                        'taxonomy_id': dc['taxonomy_id'],
-                        'model_id': s,
-                        'partial_cloud_path': cfg.DATASETS.SHAPENET.PARTIAL_POINTS_PATH % (
-                        subset, dc['taxonomy_id'], s, i),
-                        'gtcloud_path': gt_path
-                    } for i in range(n_renderings)])
-                    '''
-
-        logging.info('Complete collecting files of the dataset. Total files: %d' % len(file_list))
-        return file_list
-
-
-class ShapeNetCarsDataLoader(ShapeNetDataLoader):
-    def __init__(self, cfg):
-        super(ShapeNetCarsDataLoader, self).__init__(cfg)
-
-        # Remove other categories except cars
-        self.dataset_categories = [dc for dc in self.dataset_categories if dc['taxonomy_id'] == '02958343']
-
-
-class Completion3DDataLoader(object):
-    def __init__(self, cfg):
-        self.cfg = cfg
-
-        # Load the dataset indexing file
-        self.dataset_categories = []
-        with open(cfg.DATASETS.COMPLETION3D.CATEGORY_FILE_PATH) as f:
-            self.dataset_categories = json.loads(f.read())
-
-    def get_dataset(self, subset):
-        file_list = self._get_file_list(self.cfg, self._get_subset(subset))
-        transforms = self._get_transforms(self.cfg, subset)
-        required_items = ['partial_cloud'] if subset == DatasetSubset.TEST else ['partial_cloud', 'gtcloud']
-        return Dataset({
-            'required_items': required_items,
-            'shuffle': subset == DatasetSubset.TRAIN
-        }, file_list, transforms)
-
-    def _get_transforms(self, cfg, subset):
-        if subset == DatasetSubset.TRAIN:
-            return utils.data_transforms.Compose([{
-                'callback': 'RandomSamplePoints',
-                'parameters': {
-                    'n_points': cfg.CONST.N_INPUT_POINTS
-                },
-                'objects': ['partial_cloud']
-            }, {
-                'callback': 'RandomMirrorPoints',
-                'objects': ['partial_cloud', 'gtcloud']
-            }, {
-                'callback': 'ScalePoints',
-                'parameters': {
-                    'scale': 0.85
-                },
-                'objects': ['partial_cloud', 'gtcloud']
-            },
-                {
-                    'callback': 'ToTensor',
-                    'objects': ['partial_cloud', 'gtcloud']
-                }])
-        elif subset == DatasetSubset.VAL:
-            return utils.data_transforms.Compose([{
-                'callback': 'ScalePoints',
-                'parameters': {
-                    'scale': 0.85
-                },
-                'objects': ['partial_cloud', 'gtcloud']
-            }, {
-                'callback': 'ToTensor',
-                'objects': ['partial_cloud', 'gtcloud']
-            }])
-        else:
-            return utils.data_transforms.Compose([{
-                'callback': 'ToTensor',
-                'objects': ['partial_cloud']
-            }])
-
-    def _get_subset(self, subset):
-        if subset == DatasetSubset.TRAIN:
-            return 'train'
-        elif subset == DatasetSubset.VAL:
-            return 'val'
-        else:
-            return 'test'
-
-    def _get_file_list(self, cfg, subset):
-        """Prepare file list for the dataset"""
-        file_list = []
-
-        for dc in self.dataset_categories:
-            logging.info('Collecting files of Taxonomy [ID=%s, Name=%s]' % (dc['taxonomy_id'], dc['taxonomy_name']))
-            samples = dc[subset]
-
-            for s in tqdm(samples, leave=False):
-                file_list.append({
-                    'taxonomy_id':
-                    dc['taxonomy_id'],
-                    'model_id':
-                    s,
-                    'partial_cloud_path':
-                    cfg.DATASETS.COMPLETION3D.PARTIAL_POINTS_PATH % (subset, dc['taxonomy_id'], s),
-                    'gtcloud_path':
-                    cfg.DATASETS.COMPLETION3D.COMPLETE_POINTS_PATH % (subset, dc['taxonomy_id'], s),
-                })
-
-        logging.info('Complete collecting files of the dataset. Total files: %d' % len(file_list))
-        return file_list
 
 class JRSDataLoader(object):
     def __init__(self, subset, cfg):
@@ -414,13 +163,13 @@ class JRSDataLoader(object):
 
 
         self.cfg = cfg
-        self.taxonomy_ids = cfg.CONST.WEIGHTS if 'WEIGHTS' in cfg.CONST and cfg.CONST.WEIGHTS else "0/0.0"
+        self.pth_id = cfg.CONST.WEIGHTS if 'WEIGHTS' in cfg.CONST and cfg.CONST.WEIGHTS else "0/0.0"
         self.npoints = cfg.JRS.NPOINTS
         self.files = os.listdir(self.data_path)
         
 
     def get_dataset(self, subset):
-        taxonomy_ids = self.taxonomy_ids.split('.')[-2].split('/')[0]
+        pth_id = self.pth_id.split('.')[-2].split('/')[0]
         data_path = self.data_path
         files = self.files
         file_list = {}
@@ -431,7 +180,7 @@ class JRSDataLoader(object):
         return Dataset({
             'required_items': required_items,
             'shuffle': subset == DatasetSubset.TRAIN}
-        , taxonomy_ids, data_path, file_list, transforms)        
+        , pth_id, data_path, file_list, transforms)        
 
     def _get_transforms(self, cfg, subset):
         if subset == DatasetSubset.TRAIN:
@@ -502,96 +251,11 @@ class JRSDataLoader(object):
                     'callback': 'ToTensor',
                     'objects': ['partial_cloud']
                 }])
-            
-
-
-
-class Completion3DPCCTDataLoader(Completion3DDataLoader):
-    """
-    Dataset Completion3D containing only plane, car, chair, table
-    """
-    def __init__(self, cfg):
-        super(Completion3DPCCTDataLoader, self).__init__(cfg)
-
-        # Remove other categories except couch, chairs, car, lamps
-        cat_set = {'02691156', '03001627', '02958343', '04379243'} # plane, chair, car, table
-        # cat_set = {'04256520', '03001627', '02958343', '03636649'}
-        self.dataset_categories = [dc for dc in self.dataset_categories if dc['taxonomy_id'] in cat_set]
-
-
-class KittiDataLoader(object):
-    def __init__(self, cfg):
-        self.cfg = cfg
-
-        # Load the dataset indexing file
-        self.dataset_categories = []
-        with open(cfg.DATASETS.KITTI.CATEGORY_FILE_PATH) as f:
-            self.dataset_categories = json.loads(f.read())
-
-    def get_dataset(self, subset):
-        file_list = self._get_file_list(self.cfg, self._get_subset(subset))
-        transforms = self._get_transforms(self.cfg, subset)
-        required_items = ['partial_cloud', 'bounding_box']
-
-        return Dataset({'required_items': required_items, 'shuffle': False}, file_list, transforms)
-
-    def _get_transforms(self, cfg, subset):
-        return utils.data_transforms.Compose([{
-            'callback': 'NormalizeObjectPose',
-            'parameters': {
-                'input_keys': {
-                    'ptcloud': 'partial_cloud',
-                    'bbox': 'bounding_box'
-                }
-            },
-            'objects': ['partial_cloud', 'bounding_box']
-        }, {
-            'callback': 'RandomSamplePoints',
-            'parameters': {
-                'n_points': cfg.CONST.N_INPUT_POINTS
-            },
-            'objects': ['partial_cloud']
-        }, {
-            'callback': 'ToTensor',
-            'objects': ['partial_cloud', 'bounding_box']
-        }])
-
-    def _get_subset(self, subset):
-        if subset == DatasetSubset.TRAIN:
-            return 'train'
-        elif subset == DatasetSubset.VAL:
-            return 'val'
-        else:
-            return 'test'
-
-    def _get_file_list(self, cfg, subset):
-        """Prepare file list for the dataset"""
-        file_list = []
-
-        for dc in self.dataset_categories:
-            logging.info('Collecting files of Taxonomy [ID=%s, Name=%s]' % (dc['taxonomy_id'], dc['taxonomy_name']))
-            samples = dc[subset]
-
-            for s in tqdm(samples, leave=False):
-                file_list.append({
-                    'taxonomy_id': dc['taxonomy_id'],
-                    'model_id': s,
-                    'partial_cloud_path': cfg.DATASETS.KITTI.PARTIAL_POINTS_PATH % s,
-                    'bounding_box_path': cfg.DATASETS.KITTI.BOUNDING_BOX_FILE_PATH % s,
-                })
-
-        logging.info('Complete collecting files of the dataset. Total files: %d' % len(file_list))
-        return file_list
-
-
 # //////////////////////////////////////////// = Dataset Loader Mapping = //////////////////////////////////////////// #
 
 DATASET_LOADER_MAPPING = {
-    'Completion3D': Completion3DDataLoader,
-    'JRS': JRSDataLoader,
-    'Completion3DPCCT': Completion3DPCCTDataLoader,
-    'ShapeNet': ShapeNetDataLoader,
-    'ShapeNetCars': ShapeNetCarsDataLoader,
-    'KITTI': KittiDataLoader
+
+    'JRS': JRSDataLoader
+
 }  # yapf: disable
 
