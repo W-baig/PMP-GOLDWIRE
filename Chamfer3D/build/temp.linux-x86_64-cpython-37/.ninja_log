@@ -1,3 +1,5 @@
 # ninja log v5
-0	21349	1727234350274250139	/home/wanghao/Models/PMP-Net-main/Chamfer3D/build/temp.linux-x86_64-cpython-37/chamfer3D.o	aa36470163fdf24c
-0	29005	1727234357918267890	/home/wanghao/Models/PMP-Net-main/Chamfer3D/build/temp.linux-x86_64-cpython-37/chamfer_cuda.o	16316034c069e0c8
+0	20136	0	/home/wanghao/Projects/PMP-Net-main-WIRE/Chamfer3D/build/temp.linux-x86_64-cpython-37/chamfer3D.o	e0d80f80ab1ebde9
+0	24127	0	/home/wanghao/Projects/PMP-Net-main-WIRE/Chamfer3D/build/temp.linux-x86_64-cpython-37/chamfer_cuda.o	c95f385f17ff3b5f
+0	25225	1733835662878394495	/home/wanghao/Projects/PMP-Net-main-WIRE/Chamfer3D/build/temp.linux-x86_64-cpython-37/chamfer3D.o	1a031cf254de7fd7
+0	31981	1733835669610372346	/home/wanghao/Projects/PMP-Net-main-WIRE/Chamfer3D/build/temp.linux-x86_64-cpython-37/chamfer_cuda.o	4c576930970fe2ba

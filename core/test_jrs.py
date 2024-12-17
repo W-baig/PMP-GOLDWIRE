@@ -45,6 +45,8 @@ def test_net(cfg, epoch_idx=-1, test_data_loader=None, test_writer=None, model=N
         model = Model(dataset=cfg.DATASET.TRAIN_DATASET)
         if torch.cuda.is_available():
             model = torch.nn.DataParallel(model).cuda()
+            # model = model.cuda()
+
 
         assert 'WEIGHTS' in cfg.CONST and cfg.CONST.WEIGHTS
         logging.info('Recovering from %s ...' % (cfg.CONST.WEIGHTS))

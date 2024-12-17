@@ -224,8 +224,9 @@ class StepModelTransformer(nn.Module):
         l0_xyz = point_cloud
         l0_points = point_cloud
         b, _, n = l0_points.shape
-        noise_points = torch.normal(mean=0, std=torch.ones((b, (self.noise_dim if self.if_noise else 0), n),
-                                                           device=device) * self.noise_stdv)
+        # noise_points = torch.normal(mean=0, std=torch.ones((b, (self.noise_dim if self.if_noise else 0), n),
+                                                        #    device=device) * self.noise_stdv)
+        noise_points = torch.ones((b, (self.noise_dim if self.if_noise else 0), n),device=device) * self.noise_stdv
         l0_points = torch.cat([l0_points, noise_points], 1)
         l1_xyz, l1_points = self.sa_module_1(l0_xyz, l0_points)  # (B, 3, 512), (B, 128, 512)
         l1_points = self.transformer_start_1(l1_points, l1_xyz)

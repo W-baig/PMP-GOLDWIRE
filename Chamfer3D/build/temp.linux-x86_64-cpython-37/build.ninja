@@ -1,10 +1,10 @@
 ninja_required_version = 1.3
 cxx = c++
-nvcc = /usr/local/cuda/bin/nvcc
+nvcc = /home/wanghao/cuda-11.8/bin/nvcc
 
-cflags = -pthread -B /home/wanghao/anaconda3/envs/pmp/compiler_compat -Wl,--sysroot=/ -Wsign-compare -DNDEBUG -g -fwrapv -O3 -Wall -Wstrict-prototypes -fPIC -I/home/wanghao/anaconda3/envs/pmp/lib/python3.7/site-packages/torch/include -I/home/wanghao/anaconda3/envs/pmp/lib/python3.7/site-packages/torch/include/torch/csrc/api/include -I/home/wanghao/anaconda3/envs/pmp/lib/python3.7/site-packages/torch/include/TH -I/home/wanghao/anaconda3/envs/pmp/lib/python3.7/site-packages/torch/include/THC -I/usr/local/cuda/include -I/home/wanghao/anaconda3/envs/pmp/include/python3.7m -c
+cflags = -pthread -B /home/wanghao/anaconda3/envs/new_pmp/compiler_compat -Wl,--sysroot=/ -Wsign-compare -DNDEBUG -g -fwrapv -O3 -Wall -Wstrict-prototypes -fPIC -I/home/wanghao/anaconda3/envs/new_pmp/lib/python3.7/site-packages/torch/include -I/home/wanghao/anaconda3/envs/new_pmp/lib/python3.7/site-packages/torch/include/torch/csrc/api/include -I/home/wanghao/anaconda3/envs/new_pmp/lib/python3.7/site-packages/torch/include/TH -I/home/wanghao/anaconda3/envs/new_pmp/lib/python3.7/site-packages/torch/include/THC -I/home/wanghao/cuda-11.8/include -I/home/wanghao/anaconda3/envs/new_pmp/include/python3.7m -c
 post_cflags = -DTORCH_API_INCLUDE_EXTENSION_H '-DPYBIND11_COMPILER_TYPE="_gcc"' '-DPYBIND11_STDLIB="_libstdcpp"' '-DPYBIND11_BUILD_ABI="_cxxabi1011"' -DTORCH_EXTENSION_NAME=chamfer_3D -D_GLIBCXX_USE_CXX11_ABI=0 -std=c++14
-cuda_cflags = -I/home/wanghao/anaconda3/envs/pmp/lib/python3.7/site-packages/torch/include -I/home/wanghao/anaconda3/envs/pmp/lib/python3.7/site-packages/torch/include/torch/csrc/api/include -I/home/wanghao/anaconda3/envs/pmp/lib/python3.7/site-packages/torch/include/TH -I/home/wanghao/anaconda3/envs/pmp/lib/python3.7/site-packages/torch/include/THC -I/usr/local/cuda/include -I/home/wanghao/anaconda3/envs/pmp/include/python3.7m -c
+cuda_cflags = -I/home/wanghao/anaconda3/envs/new_pmp/lib/python3.7/site-packages/torch/include -I/home/wanghao/anaconda3/envs/new_pmp/lib/python3.7/site-packages/torch/include/torch/csrc/api/include -I/home/wanghao/anaconda3/envs/new_pmp/lib/python3.7/site-packages/torch/include/TH -I/home/wanghao/anaconda3/envs/new_pmp/lib/python3.7/site-packages/torch/include/THC -I/home/wanghao/cuda-11.8/include -I/home/wanghao/anaconda3/envs/new_pmp/include/python3.7m -c
 cuda_post_cflags = -D__CUDA_NO_HALF_OPERATORS__ -D__CUDA_NO_HALF_CONVERSIONS__ -D__CUDA_NO_BFLOAT16_CONVERSIONS__ -D__CUDA_NO_HALF2_OPERATORS__ --expt-relaxed-constexpr --compiler-options ''"'"'-fPIC'"'"'' -DTORCH_API_INCLUDE_EXTENSION_H '-DPYBIND11_COMPILER_TYPE="_gcc"' '-DPYBIND11_STDLIB="_libstdcpp"' '-DPYBIND11_BUILD_ABI="_cxxabi1011"' -DTORCH_EXTENSION_NAME=chamfer_3D -D_GLIBCXX_USE_CXX11_ABI=0 -gencode=arch=compute_86,code=compute_86 -gencode=arch=compute_86,code=sm_86 -std=c++14
 cuda_dlink_post_cflags = 
 ldflags = 
@@ -23,8 +23,8 @@ rule cuda_compile
 
 
 
-build /home/wanghao/Models/PMP-Net-main/Chamfer3D/build/temp.linux-x86_64-cpython-37/chamfer3D.o: cuda_compile /home/wanghao/Models/PMP-Net-main/Chamfer3D/chamfer3D.cu
-build /home/wanghao/Models/PMP-Net-main/Chamfer3D/build/temp.linux-x86_64-cpython-37/chamfer_cuda.o: compile /home/wanghao/Models/PMP-Net-main/Chamfer3D/chamfer_cuda.cpp
+build /home/wanghao/Projects/PMP-Net-main-WIRE/Chamfer3D/build/temp.linux-x86_64-cpython-37/chamfer3D.o: cuda_compile /home/wanghao/Projects/PMP-Net-main-WIRE/Chamfer3D/chamfer3D.cu
+build /home/wanghao/Projects/PMP-Net-main-WIRE/Chamfer3D/build/temp.linux-x86_64-cpython-37/chamfer_cuda.o: compile /home/wanghao/Projects/PMP-Net-main-WIRE/Chamfer3D/chamfer_cuda.cpp
 
 
 

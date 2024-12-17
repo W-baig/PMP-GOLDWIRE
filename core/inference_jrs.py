@@ -40,6 +40,7 @@ def inference_net(cfg):
 
     if torch.cuda.is_available():
         model = torch.nn.DataParallel(model).cuda()
+        # model = model.cuda()
 
     # Load the pretrained model from a checkpoint
     assert 'WEIGHTS' in cfg.CONST and cfg.CONST.WEIGHTS
@@ -72,8 +73,9 @@ def inference_net(cfg):
                 data[k] = utils.helpers.var_or_cuda(v)
 
             partial = data['partial_cloud']
-            
 
+            
+            
 
             pcds = model(partial)[0]
             pcd1, pcd2, pcd3 = pcds

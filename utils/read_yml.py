@@ -3,7 +3,6 @@ import os
 import os.path
 from torch.utils.data import Dataset
 import torch
-from PIL import Image
 import numpy as np
 import pickle
 import random

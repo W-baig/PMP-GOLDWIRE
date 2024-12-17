@@ -43,9 +43,9 @@ __C.CONST.N_INPUT_POINTS                         = 2048
 
 __C.DIR                                          = edict()
 __C.DIR.OUT_PATH                                 = '/home/wanghao/Projects/PMP-Net-main-WIRE/exp/output'
-__C.CONST.DEVICE                                 = '1'
+__C.CONST.DEVICE                                 = '0'
 # __C.CONST.WEIGHTS                                = '/home/wanghao/Projects/PMP-Net-main-WIRE/pre-trained/completion3d/ckpt-best-pmpplus.pth'
-__C.CONST.WEIGHTS                                = '/home/wanghao/Projects/PMP-Net-main-WIRE/exp/output/checkpoints/2024-12-05T21:28:14.274665/ckpt-best-322.pth'
+__C.CONST.WEIGHTS                                = '/home/wanghao/Projects/PMP-Net-main-WIRE/exp/output/checkpoints/2024-12-10T21:06:44.645650/ckpt-epoch-200.pth'
 
 #
 # Memcached

@@ -498,10 +498,6 @@ class JRSDataLoader(object):
                 #     'parameters': { },
                 #     'objects': ['partial_cloud']
                 # },
-                # {
-                #     'callback': 'RandomRotatePoints',
-                #     'objects': ['partial_cloud']
-                # },
                 {
                     'callback': 'ToTensor',
                     'objects': ['partial_cloud']

@@ -389,8 +389,10 @@ def square_distance(src, dst):
     B, N, _ = src.shape
     _, M, _ = dst.shape
     dist = -2 * torch.matmul(src, dst.permute(0, 2, 1))  # B, N, M
-    dist += torch.sum(src ** 2, -1).view(B, N, 1)
-    dist += torch.sum(dst ** 2, -1).view(B, 1, M)
+    # dist += torch.sum(src ** 2, -1).view(B, N, 1)
+    # dist += torch.sum(dst ** 2, -1).view(B, 1, M)
+    dist += torch.sum(src ** 2, -1).reshape(B, N, 1)
+    dist += torch.sum(dst ** 2, -1).reshape(B, 1, M)
     return dist
 
 def query_knn(nsample, xyz, new_xyz, include_self=True):

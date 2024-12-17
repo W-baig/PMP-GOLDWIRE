@@ -77,6 +77,8 @@ def train_net(cfg):
     model = Model(dataset=cfg.DATASET.TRAIN_DATASET)
     if torch.cuda.is_available():
         model = torch.nn.DataParallel(model).cuda()
+        # model = model.cuda()
+
 
     # Create the optimizers
     optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad, model.parameters()),
