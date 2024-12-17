@@ -9,7 +9,7 @@ import numpy as np
 import sys
 import torch
 from pprint import pprint
-from config_c3d import cfg
+from config_jrs import cfg
 from core.train_jrs import train_net
 
 from core.test_jrs import test_net

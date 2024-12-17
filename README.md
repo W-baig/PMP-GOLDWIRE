@@ -6,21 +6,6 @@
 
 - 针对金线补全的项目
 
-## [Getting Started]
-#### Datasets and Pretrained Models
-
-We use the [PCN](https://www.shapenet.org/) and [Compeletion3D](http://completion3d.stanford.edu/) datasets in our experiments, which are available below:
-
-- [PCN](https://drive.google.com/drive/folders/1P_W1tz5Q4ZLapUifuOE4rFAZp6L1XTJz)
-- [Completion3D](http://download.cs.stanford.edu/downloads/completion3d/dataset2019.zip)
-
-The pretrained models on Completion3D and PCN dataset are available as follows:
-
-- [PMP-Net_pre-trained](https://drive.google.com/drive/folders/1emGsfdnIj1eUtUxZlfiWiuJ0QJag4nOn?usp=sharing)
-
-Backup Links:
-
-- [PMP-Net_pre-trained](https://pan.baidu.com/s/1oQbaVI7yN9NmI_2E9tztGQ) (pwd: n7t4)
 
 #### Install Python Denpendencies
 
@@ -29,6 +14,7 @@ cd PMP-Net
 conda create -n pmp python=3.7
 conda activate pmp
 pip3 install -r requirements.txt
+pip install torch>=1.4.0
 ```
 
 #### Build PyTorch Extensions
@@ -45,17 +31,25 @@ cd Chamfer3D
 python setup.py install
 ```
 
-You need to update the file path of the datasets:
+You need to update the file path of the datasets in config_jrs.py:
 
 ```
-__C.DATASETS.COMPLETION3D.PARTIAL_POINTS_PATH    = '/path/to/datasets/Completion3D/%s/partial/%s/%s.h5'
-__C.DATASETS.COMPLETION3D.COMPLETE_POINTS_PATH   = '/path/to/datasets/Completion3D/%s/gt/%s/%s.h5'
-__C.DATASETS.SHAPENET.PARTIAL_POINTS_PATH        = '/path/to/datasets/ShapeNet/ShapeNetCompletion/%s/partial/%s/%s/%02d.pcd'
-__C.DATASETS.SHAPENET.COMPLETE_POINTS_PATH       = '/path/to/datasets/ShapeNet/ShapeNetCompletion/%s/complete/%s/%s.pcd'
+__C.DIR.OUT_PATH                                 = ''
 
-# Dataset Options: Completion3D, Completion3DPCCT, ShapeNet, ShapeNetCars
-__C.DATASET.TRAIN_DATASET                        = 'ShapeNet'
-__C.DATASET.TEST_DATASET                         = 'ShapeNet'
+__C.CONST.WEIGHTS                                = ''
+
+# for JRS
+__C.JRS                                          = edict()
+__C.JRS.INFERENCE_DATA_PATH                      = '/data/inference_pts'
+__C.JRS.TRAIN_DATA_PATH                          = '/data/train_pts'
+__C.JRS.VAL_DATA_PATH                          = '/data/val_pts'
+__C.JRS.NPOINTS                                  = 2048
+
+data: inference_pts, train_pts, val_pts
+    inference_pts: partial
+    train_pts: partial, gt
+    val_pts: partial, gt
+
 ```
 
 #### Training, Testing and Inference
@@ -63,7 +57,7 @@ __C.DATASET.TEST_DATASET                         = 'ShapeNet'
 To train PMP-Net++ or PMP-Net, you can simply use the following command:
 
 ```
-python main_*.py  # remember to change '*' to 'c3d' or 'pcn', and change between 'import PMPNetPlus' and 'import PMPNet'
+python main_jrs.py  # model change between 'import PMPNetPlus' and 'import PMPNet'
 ```
 
 To test or inference, you should specify the path of checkpoint if the config_*.py file
@@ -74,14 +68,7 @@ __C.CONST.WEIGHTS                                = "path to your checkpoint"
 then use the following command:
 
 ```
-python main_*.py --test
-python main_*.py --inference
+python main_jrs.py --test
+python main_jrs.py --inference
 ```
 
-## [Acknowledgements]
-
-Some of the code of this repo is borrowed from [GRNet](https://github.com/hzxie/GRNet), [pytorchpointnet++](https://github.com/erikwijmans/Pointnet2_PyTorch) and [ChamferDistancePytorch](https://github.com/ThibaultGROUEIX/ChamferDistancePytorch). We thank the authors for their wonderful job!
-
-## [License]
-
-This project is open sourced under MIT license.

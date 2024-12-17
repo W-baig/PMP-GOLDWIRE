@@ -16,7 +16,7 @@ import sys
 from io import BytesIO
 
 # References: http://confluence.sensetime.com/pages/viewpage.action?pageId=44650315
-from config_c3d import cfg
+from config_jrs import cfg
 sys.path.append(cfg.MEMCACHED.LIBRARY_PATH)
 
 mc_client = None

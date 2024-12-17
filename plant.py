@@ -1,6 +1,6 @@
 import torch
 from models.model import PMPNetPlus
-from config_c3d import cfg
+from config_jrs import cfg
 
 from collections import OrderedDict
 import os
